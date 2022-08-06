@@ -87,7 +87,7 @@
     margin: 0px auto;
     /* box-shadow: ; */
 
-    animation: 4s fadeIn;
+    animation: 3s fadeIn;
     animation-fill-mode: forwards;
     visibility: hidden;        
 }
@@ -131,14 +131,14 @@
 
 .mini1{
     font-family: 'Courier New', Courier, monospace;
-    animation: 3s fadeIn;
+    animation: 2s fadeIn;
     animation-fill-mode: forwards;
     visibility: hidden;    
 }
 
 .mini2{
     font-family: 'Courier New', Courier, monospace;
-    animation: 4s fadeIn;
+    animation: 3s fadeIn;
     animation-fill-mode: forwards;
     visibility: hidden;    
 }
