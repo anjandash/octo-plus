@@ -50,12 +50,12 @@ def octo(xlfile):
                     correct += 1
                 
             if correct == len(fee_list):
-                flash(Markup(f"<p class='mini'>100% of entries match!</p>"))
-                flash(Markup("<p class='mini'>The formula is:</p>"))
+                flash(Markup(f"<p class='mini1'>100% of entries match!</p>"))
+                flash(Markup("<p class='mini2'>The formula is:</p>"))
                 flash(Markup("<p class='formula'>(base * rate) / 100</p>"))
             else:
-                flash(Markup(f"Only {correct / (len(fee_list))}% of entries matched!"))
-                flash(Markup("Formula could not be generated: Try Octo+"))
+                flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
+                flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
             # ####################
             # ####################
 
@@ -85,12 +85,12 @@ def octo(xlfile):
                     correct += 1
                 
             if correct == len(fee_list):
-                flash(Markup(f"<p class='mini'>{100}% of entries match!</p>"))
-                flash(Markup("<p class='mini'>The formula is:</p>"))
+                flash(Markup(f"<p class='mini1'>{100}% of entries match!</p>"))
+                flash(Markup("<p class='mini2'>The formula is:</p>"))
                 flash(Markup("<p class='formula'>(base * rate * get_diff(period end - period start) / 365) / 100</p>"))
             else:
-                flash(Markup(f"<p class='mini'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                flash(Markup("<p class='mini'>Formula could not be generated: Try Octo+</p>"))
+                flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
+                flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
             # ####################
             # ####################
             
@@ -132,12 +132,12 @@ def octo(xlfile):
                                 correct += 1
                             
                         if correct == len(fee_list):
-                            flash(Markup(f"<p class='mini'>{100}% of entries match!</p>"))
-                            flash(Markup("<p class='mini'>The formula is:</p>"))
+                            flash(Markup(f"<p class='mini1'>{100}% of entries match!</p>"))
+                            flash(Markup("<p class='mini2'>The formula is:</p>"))
                             flash(Markup("<p class='formula'>(base * get_rate(base) * get_diff(period end - period start) / 365) / 100</p>"))  
                         else:
-                            flash(Markup(f"<p class='mini'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                            flash(Markup("<p class='mini'>Formula could not be generated: Try Octo+</p>"))
+                            flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
+                            flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
                         # ####################
                         # ####################                  
 
@@ -166,12 +166,12 @@ def octo(xlfile):
                                 correct += 1
                             
                         if correct == len(fee_list):
-                            flash(Markup(f"<p class='mini'>{100}% of entries match!</p>"))
-                            flash(Markup("<p class='mini'>The formula is:</p>"))
+                            flash(Markup(f"<p class='mini1'>{100}% of entries match!</p>"))
+                            flash(Markup("<p class='mini2'>The formula is:</p>"))
                             flash(Markup("<p class='formula'>(base * get_rate(rate id) * get_diff(period end - period start) / 365) / 100</p>"))
                         else:
-                            flash(Markup(f"<p class='mini'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                            flash(Markup("<p class='mini'>Formula could not be generated: Try Octo+</p>"))
+                            flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
+                            flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
                         # ####################
                         # ####################     
     return "\n".join(m)

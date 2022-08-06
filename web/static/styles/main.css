@@ -4,6 +4,7 @@
     margin: 0px 0px;
     padding: 0px 0px;
 
+    /* background: #F7A59A;  */
     background: #f08290;
     color: #130a4f;
     font-family: 'DM Sans', sans-serif;
@@ -13,14 +14,39 @@
 /* .logo{
     height: 40px;
     width: 40px;
-    margin: 5px auto;
+    margin: 10px auto;
+
+    background-image: url('/static/img/octo-plus.png');
+    background-size: contain;
 } */
+
+.tentacle{
+    width: 20%; 
+    height: 100%; 
+    top: 300; 
+    left: 0; 
+    position: absolute;
+    background-image: url('/static/img/tentacle.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.tentacle{
+    width: 25%; 
+    height: 300px; 
+    top: 300; 
+    left: 0; 
+    position: absolute;
+    background-image: url('/static/img/tentacle.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
 
 .container{
     height: 100%;
     width: 100%; 
 
-    padding: 30px;
+    padding: 0px;
     text-align: center;
     /* background-image: url(); */
     /* background-image: url('/static/img/octo-plus.png');
@@ -30,6 +56,7 @@
 }
 
 .header{
+    margin-top: 40px;
     font-size: 54px;
     font-weight: 700;
 }
@@ -50,7 +77,29 @@
 
 .formula{
     color: black;
+    width: 80%;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #130a4f;
+    color: antiquewhite;
+
+    padding: 10px 10px 1px;
+    margin: 0px auto;
+    /* box-shadow: ; */
+
+    animation: 4s fadeIn;
+    animation-fill-mode: forwards;
+    visibility: hidden;        
 }
+
+@keyframes fadeIn {
+    99% {
+      visibility: hidden;
+    }
+    100% {
+      visibility: visible;
+    }
+  }
 
 #fileList{
     margin-top: 5px;
@@ -62,8 +111,10 @@
     height: 300px;
 
     margin: 10px auto;
-    box-shadow:inset 2px 2px 2px 0px #f08290;
-    border-radius: 5px;
+    /* border: 1px solid red; */
+    /* box-shadow:inset 2px 2px 2px 0px #F7A59A; */
+    /* box-shadow:inset 2px 2px 2px 0px #f08290;
+    border-radius: 5px; */
 }
 
 .mess{
@@ -72,12 +123,34 @@
 
     margin: 2px auto;
     text-align: center;
-    vertical-align: auto;
+
+
 }
 
-.mini{
+
+
+.mini1{
     font-family: 'Courier New', Courier, monospace;
+    animation: 3s fadeIn;
+    animation-fill-mode: forwards;
+    visibility: hidden;    
 }
+
+.mini2{
+    font-family: 'Courier New', Courier, monospace;
+    animation: 4s fadeIn;
+    animation-fill-mode: forwards;
+    visibility: hidden;    
+}
+
+@keyframes fadeIn {
+    99% {
+      visibility: hidden;
+    }
+    100% {
+      visibility: visible;
+    }
+  }
 
 .selected{
     font-size: 28px;
@@ -113,6 +186,9 @@ button {
     transition: all 0.3s ease;
     position: relative;
     display: inline-block;
+    /* box-shadow:inset 2px 2px 2px 0px #F7A59A,
+    7px 7px 20px 0px rgba(0,0,0,.1),
+    4px 4px 5px 0px rgba(0,0,0,.1); */
     box-shadow:inset 2px 2px 2px 0px #f08290,
     7px 7px 20px 0px rgba(0,0,0,.1),
     4px 4px 5px 0px rgba(0,0,0,.1);
