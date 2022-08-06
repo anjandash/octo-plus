@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Press+Start+2P&display=swap');
+
+*{
+    margin: 0px 0px;
+    padding: 0px 0px;
+
+    background: #f08290;
+    color: #130a4f;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 32px;
+}
+
+/* .logo{
+    height: 40px;
+    width: 40px;
+    margin: 5px auto;
+} */
+
+.container{
+    height: 100%;
+    width: 100%; 
+
+    padding: 30px;
+    text-align: center;
+    /* background-image: url(); */
+    /* background-image: url('/static/img/octo-plus.png');
+    background-size: contain;
+    opacity: 0.5; */
+
+}
+
+.header{
+    font-size: 54px;
+    font-weight: 700;
+}
+
+.subheader{
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.custom-file-upload {
+    /* border: 1px solid #f7a59a; */
+    border-radius: 5px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.formula{
+    color: black;
+}
+
+#fileList{
+    margin-top: 5px;
+    color: black;
+}
+
+.flash-zone{
+    width: auto;
+    height: 300px;
+
+    margin: 10px auto;
+    box-shadow:inset 2px 2px 2px 0px #f08290;
+    border-radius: 5px;
+}
+
+.mess{
+    width: 100%;
+    height: 60px;
+
+    margin: 2px auto;
+    text-align: center;
+    vertical-align: auto;
+}
+
+.mini{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.selected{
+    font-size: 28px;
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+
+.frame {
+    width: 90%;
+    margin: 40px auto;
+    text-align: center;
+  }
+
+
+button {
+    margin: 20px;
+}  
+
+.custom-btn {
+    width: 200px;
+    height: 60px;
+    color: #130a4f;
+    border-radius: 5px;
+    padding: 10px 25px;
+
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    box-shadow:inset 2px 2px 2px 0px #f08290,
+    7px 7px 20px 0px rgba(0,0,0,.1),
+    4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+  }
+  
+
+/* 16 */
+.btn-16 {
+    border: none;
+    color: #130a4f;
+  }
+
+  .btn-16:after {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+    direction: rtl;
+    z-index: -1;
+    box-shadow:
+     -7px -7px 20px 0px #fff9,
+     -4px -4px 5px 0px #fff9,
+     7px 7px 20px 0px #0002,
+     4px 4px 5px 0px #0001;
+    transition: all 0.3s ease;
+  }
+  .btn-16:hover {
+    color: #130a4f;
+  }
+  .btn-16:hover:after {
+    left: auto;
+    right: 0;
+    width: 100%;
+  }
+  .btn-16:active {
+    top: 2px;
+  }  
+  

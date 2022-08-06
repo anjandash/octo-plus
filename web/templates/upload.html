@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Octo+</title>
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+
+	<script>
+		updateList = function() {
+			var input = document.getElementById('file');
+			var output = document.getElementById('fileList');
+
+			output.innerHTML = '<ul>';
+			for (var i = 0; i < input.files.length; ++i) {
+				output.innerHTML += '<p class="selected">selected:\"' + input.files.item(i).name + '\"</p>';
+			}
+			output.innerHTML += '</ul>';
+		}
+	</script>
+</head>
+
+<body>
+<div class="container">
+	<div class="logo"></div>
+	<div class="header">
+		Octo+ 
+	</div>
+	<p class="subheader">Formula extractor</p>>
+
+	<h2></h2>
+	<div class="frame">
+	<form method="post" action="/" enctype="multipart/form-data">
+		<dl>
+			<label class="custom-file-upload">
+				<input type="file" name="file" id="file" autocomplete="off" required onchange="javascript:updateList()"/>Upload file
+			</label>	
+		</dl>
+		<div id="fileList"></div>	
+		<button type="submit"  class="custom-btn btn-16">Submit</button>
+	</form>
+	</div>
+
+
+	<div class="flash-zone">
+	<p>
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class=flashes>
+			{% for message in messages %}
+			<div class="mess">{{ message }}</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+		{% endwith %}
+	</p>
+	</div>
+
+</div>
+</body>
+</html>
