@@ -19,13 +19,22 @@ xlfile = args.xlfile
 
 simple_path = sys.path[0] + "/../csv/simple.xlsx_Data.csv"
 period_path = sys.path[0] + "/../csv/period.xlsx_Data.DIFF.csv"
-lookup_path = sys.path[0] + "/../csv/reference.xlxs_Data.DIFF.csv"
+lookup_path = sys.path[0] + "/../csv/lookup.xlxs_Data.DIFF.csv"
 reference_path = sys.path[0] + "/../csv/reference.xlxs_Data.DIFF.csv"
+vector_path = sys.path[0] + "/../csv/vector.xlxs_Data.DIFF.csv"
 
-def get_coeff(csv_path):
+def get_coeff(csv_path, val):
     s=pd.read_csv(csv_path, header=0)
     y=s['fee']
-    X=s[['base','rate','days']] if 'days' in s.columns else s[['base','rate']]
+    
+
+    if val == "vector":
+        #flash("good")
+        X=s[['base','ip', 'bp', 'ap','days']] 
+    else:
+        #flash("bad")
+        X=s[['base','rate','days']] if 'days' in s.columns else s[['base','rate']]
+
 
     pol = PolynomialFeatures(degree=3)
     X_pol = pol.fit_transform(X)
@@ -44,7 +53,7 @@ def get_coeff(csv_path):
     coeffs = np.prod(coeffs_arr)
 
     flash_value = f"Coeff: {round(coeffs, 5)}"
-    flash(flash_value)
+    #flash(flash_value)
     return coeffs
 
 
@@ -68,6 +77,43 @@ def octo(xlfile):
     # #######################
     # rule-based verification
     # #######################
+    if 'rate vector id' in cols:
+        for ref_sheet in df_ref:
+            ref_cols = [item.lower() for item in ref_sheet.columns]
+            ref_sheet.columns = ref_cols
+
+        base_list = df_one["base"].tolist()
+        fee_list  = df_one["fee"].tolist()
+        df_one[['period start','period end']] = df_one[['period start','period end']].apply(pd.to_datetime) 
+        df_one['days'] = (df_one['period end'] - df_one['period start']).dt.days
+        days_list = df_one["days"].tolist()
+
+        ip_list = [(ref_sheet[ref_sheet["id"] == rate_id]).iloc[0]["insurer part"] for rate_id in df_one["rate vector id"].tolist()]
+        bp_list = [(ref_sheet[ref_sheet["id"] == rate_id]).iloc[0]["broker part"] for rate_id in df_one["rate vector id"].tolist()]
+        ap_list = [(ref_sheet[ref_sheet["id"] == rate_id]).iloc[0]["agent part"] for rate_id in df_one["rate vector id"].tolist()]
+
+        flash("Checking all data entries ... ")
+        correct=0
+        coeff_vector = get_coeff(vector_path, "vector")
+        for base, fee, days, ip, bp, ap in zip(base_list, fee_list, days_list, ip_list, bp_list, ap_list):
+            pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) /365) /100 ), 2) # * coeff_lookup
+            #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
+            orig_fee = float(fee)        
+
+            if orig_fee == pred_fee:
+                correct +=1
+            elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+                correct += 1
+            
+        if correct == len(fee_list):
+            flash(Markup(f"<p class='mini1'>Validated!</p>"))
+            flash(Markup("<p class='mini2'>The formula is:</p>"))
+            flash(Markup(f"<p class='formula'>(base * (days/365) * (ip + bp + ap)) / 100) </p>"))  
+        else:
+            flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
+            flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))        
+
+
     if ('base' in cols) and ('rate' in cols) and ('fee' in cols):
         if ('period start' not in cols) and ('period end' not in cols):
 
@@ -80,7 +126,7 @@ def octo(xlfile):
 
             flash("Checking all data entries ... ")
             correct=0
-            coeff_simple = get_coeff(simple_path)
+            coeff_simple = get_coeff(simple_path, "a")
             for base, rate, fee in zip(base_list, rate_list, fee_list):
                 pred_fee = round(((float(base) * float(rate)) / 100), 2) # * coeff_simple
                 #pred_fee = round(((float(base) * float(rate)) * coeff_simple), 2) # * coeff_simple
@@ -97,7 +143,7 @@ def octo(xlfile):
                 flash(Markup("<p class='formula'>(base * rate) / 100</p>"))
             else:
                 flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
+                flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))
             # ####################
             # ####################
 
@@ -117,7 +163,7 @@ def octo(xlfile):
 
             flash("Checking all data entries ... ")
             correct=0
-            coeff_period = get_coeff(period_path)
+            coeff_period = get_coeff(period_path, "a")
             for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                 pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_period
                 #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_period) ), 2) # * coeff_period
@@ -134,7 +180,7 @@ def octo(xlfile):
                 flash(Markup("<p class='formula'>(base * rate * get_diff(period end - period start) / 365) / 100</p>"))
             else:
                 flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
+                flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))
             # ####################
             # ####################
             
@@ -166,7 +212,7 @@ def octo(xlfile):
 
                         flash("Checking all data entries ... ")
                         correct=0
-                        coeff_lookup = get_coeff(lookup_path)
+                        coeff_lookup = get_coeff(lookup_path, "a")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                             pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_lookup
                             #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
@@ -183,7 +229,7 @@ def octo(xlfile):
                             flash(Markup("<p class='formula'>(base * get_rate(base) * get_diff(period end - period start) / 365) / 100</p>"))  
                         else:
                             flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                            flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
+                            flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))
                         # ####################
                         # ####################                  
 
@@ -202,7 +248,7 @@ def octo(xlfile):
 
                         flash("Checking all data entries ... ")
                         correct=0
-                        coeff_reference = get_coeff(reference_path)
+                        coeff_reference = get_coeff(reference_path, "a")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                             pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_reference
                             #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_reference) ), 2) # * coeff_reference
@@ -219,7 +265,7 @@ def octo(xlfile):
                             flash(Markup("<p class='formula'>(base * get_rate(rate id) * get_diff(period end - period start) / 365) / 100</p>"))
                         else:
                             flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
-                            flash(Markup("<p class='mini2'>Formula could not be generated: Try Octo+</p>"))
+                            flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))
                         # ####################
                         # ####################     
     return "\n".join(m)
