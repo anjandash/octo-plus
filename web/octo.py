@@ -28,8 +28,8 @@ def get_coeff(csv_path, val):
     s=pd.read_csv(csv_path, header=0)
     y=s['fee']
 
-    if val == "vector":
-        X=s[['base','ip', 'bp', 'ap','days']] 
+    if val == "vector":                       ### NOTE: temporary hard code checking
+        X=s[['base','ip', 'bp', 'ap','days']] ### NOTE: `ip`, `bp`, and `ap` can be added to make a single `rate`
     else:
         X=s[['base','rate','days']] if 'days' in s.columns else s[['base','rate']]
 
@@ -47,8 +47,8 @@ def get_coeff(csv_path, val):
 
     coeffs_arr = [coeffs1[index] for index in index_list]
     coeffs_arr = [float(item) for item in coeffs_arr]
-    flash(index_list)
-    flash(coeffs_arr)
+    #flash(index_list)  ### NOTE: Uncomment this line too see the coeff indices
+    #flash(coeffs_arr)  ### NOTE: Uncomment this line too see the coefficients
 
     return list(coeffs_arr)
 # ***************************************** #
@@ -107,7 +107,7 @@ def octo(xlfile):
         if correct == len(fee_list):
             flash(Markup(f"<p class='mini1'>Validated!</p>"))
             flash(Markup("<p class='mini2'>The formula is:</p>"))
-            flash(Markup(f"<p class='formula'> (base * (get_diff(period end - period start) / 365) * (ip + bp + ap) / 100)</p>"))  
+            flash(Markup(f"<p class='formula'>(base * (ip + bp + ap) * get_diff(period end - period start) / 365) / 100</p>"))  
         else:
             flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
             flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))        
@@ -266,5 +266,11 @@ def octo(xlfile):
                             flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
                             flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))
                         # ####################
-                        # ####################     
-    return "\n".join(m)
+                        # ####################    
+    return ""
+
+### *************************
+### *************************
+### THE UNIVERSAL FORMULA IS: (base + rate + (days / 365)) / 100
+### *************************
+### *************************
