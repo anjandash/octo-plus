@@ -23,18 +23,15 @@ lookup_path = sys.path[0] + "/../csv/lookup.xlxs_Data.DIFF.csv"
 reference_path = sys.path[0] + "/../csv/reference.xlxs_Data.DIFF.csv"
 vector_path = sys.path[0] + "/../csv/vector.xlxs_Data.DIFF.csv"
 
+# ***************************************** #
 def get_coeff(csv_path, val):
     s=pd.read_csv(csv_path, header=0)
     y=s['fee']
-    
 
     if val == "vector":
-        #flash("good")
         X=s[['base','ip', 'bp', 'ap','days']] 
     else:
-        #flash("bad")
         X=s[['base','rate','days']] if 'days' in s.columns else s[['base','rate']]
-
 
     pol = PolynomialFeatures(degree=3)
     X_pol = pol.fit_transform(X)
@@ -51,11 +48,11 @@ def get_coeff(csv_path, val):
     coeffs_arr = [coeffs1[index] for index in index_list]
     coeffs_arr = [float(item) for item in coeffs_arr]
     coeffs = np.prod(coeffs_arr)
+    coeffs = float(round(coeffs, 10))
 
-    flash_value = f"Coeff: {round(coeffs, 5)}"
-    #flash(flash_value)
+    flash(coeffs)
     return coeffs
-
+# ***************************************** #
 
 def octo(xlfile):
     df_map = pd.read_excel(xlfile, sheet_name=None)
@@ -82,6 +79,9 @@ def octo(xlfile):
             ref_cols = [item.lower() for item in ref_sheet.columns]
             ref_sheet.columns = ref_cols
 
+        # ####################
+        # checking all entries
+        # ####################        
         base_list = df_one["base"].tolist()
         fee_list  = df_one["fee"].tolist()
         df_one[['period start','period end']] = df_one[['period start','period end']].apply(pd.to_datetime) 
@@ -96,13 +96,13 @@ def octo(xlfile):
         correct=0
         coeff_vector = get_coeff(vector_path, "vector")
         for base, fee, days, ip, bp, ap in zip(base_list, fee_list, days_list, ip_list, bp_list, ap_list):
-            pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) /365) /100 ), 2) # * coeff_lookup
-            #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
+            #pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) /365) /100 ), 2) # * formula
+            pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) * coeff_vector ) ), 2) # * coeff_vector
             orig_fee = float(fee)        
 
             if orig_fee == pred_fee:
                 correct +=1
-            elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+            elif (round(abs(orig_fee - pred_fee), 2)) < 0.1:
                 correct += 1
             
         if correct == len(fee_list):
@@ -128,13 +128,13 @@ def octo(xlfile):
             correct=0
             coeff_simple = get_coeff(simple_path, "a")
             for base, rate, fee in zip(base_list, rate_list, fee_list):
-                pred_fee = round(((float(base) * float(rate)) / 100), 2) # * coeff_simple
-                #pred_fee = round(((float(base) * float(rate)) * coeff_simple), 2) # * coeff_simple
+                #pred_fee = round(((float(base) * float(rate)) / 100), 2) # * formula
+                pred_fee = round(((float(base) * float(rate)) * coeff_simple), 2) # * coeff_simple
                 orig_fee = float(fee)
 
                 if orig_fee == pred_fee:
                     correct +=1
-                elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+                elif (round(abs(orig_fee - pred_fee), 2)) < 0.1:
                     correct += 1
                 
             if correct == len(fee_list):
@@ -165,13 +165,13 @@ def octo(xlfile):
             correct=0
             coeff_period = get_coeff(period_path, "a")
             for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
-                pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_period
-                #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_period) ), 2) # * coeff_period
+                #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
+                pred_fee = round(((float(base) * float(rate) * float(days) * coeff_period) ), 2) # * coeff_period
                 orig_fee = float(fee)        
 
                 if orig_fee == pred_fee:
                     correct +=1
-                elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+                elif (round(abs(orig_fee - pred_fee), 2)) < 0.1:
                     correct += 1
                 
             if correct == len(fee_list):
@@ -214,13 +214,13 @@ def octo(xlfile):
                         correct=0
                         coeff_lookup = get_coeff(lookup_path, "a")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
-                            pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_lookup
-                            #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
+                            #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
+                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
                             orig_fee = float(fee)        
 
                             if orig_fee == pred_fee:
                                 correct +=1
-                            elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+                            elif (round(abs(orig_fee - pred_fee), 2)) < 0.1:
                                 correct += 1
                             
                         if correct == len(fee_list):
@@ -250,13 +250,13 @@ def octo(xlfile):
                         correct=0
                         coeff_reference = get_coeff(reference_path, "a")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
-                            pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * coeff_reference
-                            #pred_fee = round(((float(base) * float(rate) * float(days) * coeff_reference) ), 2) # * coeff_reference
+                            #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
+                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_reference) ), 2) # * coeff_reference
                             orig_fee = float(fee)        
 
                             if orig_fee == pred_fee:
                                 correct +=1
-                            elif (round(abs(orig_fee - pred_fee), 2)) < 0.02:
+                            elif (round(abs(orig_fee - pred_fee), 2)) < 0.1:
                                 correct += 1
                             
                         if correct == len(fee_list):
