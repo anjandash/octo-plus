@@ -47,11 +47,10 @@ def get_coeff(csv_path, val):
 
     coeffs_arr = [coeffs1[index] for index in index_list]
     coeffs_arr = [float(item) for item in coeffs_arr]
-    coeffs = np.prod(coeffs_arr)
-    coeffs = float(round(coeffs, 10))
+    flash(index_list)
+    flash(coeffs_arr)
 
-    flash(coeffs)
-    return coeffs
+    return list(coeffs_arr)
 # ***************************************** #
 
 def octo(xlfile):
@@ -97,7 +96,7 @@ def octo(xlfile):
         coeff_vector = get_coeff(vector_path, "vector")
         for base, fee, days, ip, bp, ap in zip(base_list, fee_list, days_list, ip_list, bp_list, ap_list):
             #pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) /365) /100 ), 2) # * formula
-            pred_fee = round(((float(base) * float(days) * (float(ip) + float(bp) + float(ap)) * coeff_vector ) ), 2) # * coeff_vector
+            pred_fee = round(((float(base) * float(days) * ((coeff_vector[0] * float(ip)) + (coeff_vector[1] * float(bp)) + (coeff_vector[2] * float(ap))))), 2) # * coeff_vector
             orig_fee = float(fee)        
 
             if orig_fee == pred_fee:
@@ -108,7 +107,7 @@ def octo(xlfile):
         if correct == len(fee_list):
             flash(Markup(f"<p class='mini1'>Validated!</p>"))
             flash(Markup("<p class='mini2'>The formula is:</p>"))
-            flash(Markup(f"<p class='formula'>(base * (days/365) * (ip + bp + ap)) / 100) </p>"))  
+            flash(Markup(f"<p class='formula'> (base * (get_diff(period end - period start) / 365) * (ip + bp + ap) / 100)</p>"))  
         else:
             flash(Markup(f"<p class='mini1'>Only {correct / (len(fee_list))}% of entries matched!</p>"))
             flash(Markup("<p class='mini2'>Formula could not be generated: Try retraining</p>"))        
@@ -126,10 +125,10 @@ def octo(xlfile):
 
             flash("Checking all data entries ... ")
             correct=0
-            coeff_simple = get_coeff(simple_path, "a")
+            coeff_simple = get_coeff(simple_path, "simple")
             for base, rate, fee in zip(base_list, rate_list, fee_list):
                 #pred_fee = round(((float(base) * float(rate)) / 100), 2) # * formula
-                pred_fee = round(((float(base) * float(rate)) * coeff_simple), 2) # * coeff_simple
+                pred_fee = round(((float(base) * float(rate)) * coeff_simple[0]), 2) # * coeff_simple
                 orig_fee = float(fee)
 
                 if orig_fee == pred_fee:
@@ -163,10 +162,10 @@ def octo(xlfile):
 
             flash("Checking all data entries ... ")
             correct=0
-            coeff_period = get_coeff(period_path, "a")
+            coeff_period = get_coeff(period_path, "period")
             for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                 #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
-                pred_fee = round(((float(base) * float(rate) * float(days) * coeff_period) ), 2) # * coeff_period
+                pred_fee = round(((float(base) * float(rate) * float(days) * coeff_period[0]) ), 2) # * coeff_period
                 orig_fee = float(fee)        
 
                 if orig_fee == pred_fee:
@@ -212,10 +211,10 @@ def octo(xlfile):
 
                         flash("Checking all data entries ... ")
                         correct=0
-                        coeff_lookup = get_coeff(lookup_path, "a")
+                        coeff_lookup = get_coeff(lookup_path, "lookup")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                             #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
-                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup) ), 2) # * coeff_lookup
+                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_lookup[0]) ), 2) # * coeff_lookup
                             orig_fee = float(fee)        
 
                             if orig_fee == pred_fee:
@@ -248,10 +247,10 @@ def octo(xlfile):
 
                         flash("Checking all data entries ... ")
                         correct=0
-                        coeff_reference = get_coeff(reference_path, "a")
+                        coeff_reference = get_coeff(reference_path, "reference")
                         for base, rate, fee, days in zip(base_list, rate_list, fee_list, days_list):
                             #pred_fee = round(((float(base) * float(rate) * float(days) / 365) / 100), 2) # * formula
-                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_reference) ), 2) # * coeff_reference
+                            pred_fee = round(((float(base) * float(rate) * float(days) * coeff_reference[0]) ), 2) # * coeff_reference
                             orig_fee = float(fee)        
 
                             if orig_fee == pred_fee:
