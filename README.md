@@ -5,7 +5,7 @@
 
 In this project, we solve the task of finding formula between dependent variables via polynomial regression (degree = 3), where the significant coefficients are given via Lasso regression.
 
-To run the web-server, download folder 'web', and run command:
+To run the web-server, clone the repo and run the following:
 ```
 python3 app.py
 ```
